@@ -1,0 +1,214 @@
+---
+title: "Sprawozdanie 2"
+author: "Alicja Myśliwiec, Natalia Lach"
+date: "`r Sys.Date()`"
+fontsize: 12pt
+output:
+  pdf_document:
+        toc: true
+        toc_depth: 3
+        number_sections: true
+        fig_caption: true
+        
+header-includes:
+    - \usepackage{polski}
+    - \usepackage[utf8]{inputenc}
+    - \usepackage{graphicx}
+    - \usepackage{amsmath}
+    - \usepackage{multirow}
+    - \usepackage{float}
+    - \usepackage{enumitem}
+    - \usepackage{mathtools}
+    - \usepackage{hyperref}
+    - \usepackage{url}
+    - \mathtoolsset{showonlyrefs}
+    - \usepackage{caption}
+    - \usepackage{geometry}
+    - \newgeometry{tmargin=1.5cm, bmargin=1.5cm, lmargin=1.5cm, rmargin=1.5cm}
+    - \renewcommand*{\figurename}{Rys.}
+    - \renewcommand*{\tablename}{Tab.}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r, include=FALSE}
+## MODUŁY
+require(gridExtra)
+library('dplyr')
+library(ggplot2)
+```
+\newpage
+
+
+# Wstęp
+
+# Zagadnienia teoretyczne
+przydatne definicje i twierdzenia
+
+## test t
+
+## test t-welcha
+
+## test sum rang Wilcoxona
+
+## moc testu
+definicja i algorytm generowania
+
+## test jednoznacznie najmocniejszy
+
+
+# zadanie 1
+
+## założenia  i cel zadania
+
+```{r}
+d <- 1
+m1 <- 0
+m2 <- m1 + d
+X <- rnorm(100, m1, 2)
+Y <- rnorm(200, m2, 4)
+d <- seq(-2,2,0.1)
+N <- 500 #1000
+
+```
+
+## rozwiązanie 
+
+```{r}
+zad1 <- function(d, s1=2, s2=2, a = 0.05) {
+    X <- rnorm(100, 0, s1)
+    Y <- rnorm(200, d, s2)
+    welch <- t.test(X, Y, alternative = "two.sided", var.equal = FALSE)$p.value < a
+    ttest <- t.test(X, Y, alternative = "two.sided", var.equal = TRUE)$p.value < a
+    wilcox <- wilcox.test(X, Y, alternative = "two.sided")$p.value < a
+    c(ttest, welch, wilcox)
+}
+
+v <-  sapply(d, zad1)
+for (i in seq(1,N-1,1)) {
+    v <- v + sapply(d, zad1)
+}
+mat <- v/N
+```
+
+```{r, include = FALSE}
+p <- ggplot() + geom_point(aes(d, mat[1,], color="t")) +
+geom_point(aes(d, mat[2,], color="t-welch")) + geom_point(aes(d, mat[3,], color="wilcoxon")) + 
+geom_line(aes(d, mat[1,], color="t")) +geom_line(aes(d, mat[2,], color="t-welch")) +
+geom_line(aes(d, mat[3,], color="wilcoxon"))+geom_line(aes(d, rep(0.05, length(d)), color="alpha = 0.05")) + 
+ggtitle("Symulacyjne wartości mocy testów") + labs(x="d", y ="moc") +
+theme(plot.title = element_text(hjust = 0.5)) + guides(color = guide_legend(title = "test"))
+
+ggsave("1.jpg", p)
+```
+
+```{=Latex}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.75\textwidth]{1.jpg}
+\caption{Moce testów dla prób z rozkładu normalnego o równych wariancjach.}
+\label{w1}
+\end{center}
+\end{figure}
+```
+
+## wnioski
+
+# zadanie 2
+
+## założenia  i cel zadania
+
+## rozwiązanie 
+
+```{r}
+zad2 <- function(d, s1=2, s2=4, a = 0.05) {
+    X <- rnorm(100, 0, s1)
+    Y <- rnorm(200, d, s2)
+    welch <- t.test(X, Y, alternative = "two.sided", var.equal = FALSE)$p.value < a
+    ttest <- t.test(X, Y, alternative = "two.sided", var.equal = TRUE)$p.value < a
+    wilcox <- wilcox.test(X, Y, alternative = "two.sided")$p.value < a
+    c(ttest, welch, wilcox)
+}
+
+v <-  sapply(d, zad2)
+for (i in seq(1,N-1,1)) {
+    v <- v + sapply(d, zad2)
+}
+mat <- v/N
+```
+
+```{r, include = FALSE}
+p <- ggplot() + geom_point(aes(d, mat[1,], color="t")) +
+geom_point(aes(d, mat[2,], color="t-welch")) + geom_point(aes(d, mat[3,], color="wilcoxon")) + 
+geom_line(aes(d, mat[1,], color="t")) +geom_line(aes(d, mat[2,], color="t-welch")) +
+geom_line(aes(d, mat[3,], color="wilcoxon"))+geom_line(aes(d, rep(0.05, length(d)), color="alpha = 0.05")) + 
+ggtitle("Symulacyjne wartości mocy testów") + labs(x="d", y ="moc") +
+theme(plot.title = element_text(hjust = 0.5)) + guides(color = guide_legend(title = "test"))
+
+ggsave("2.jpg", p)
+```
+
+```{=Latex}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.75\textwidth]{2.jpg}
+\caption{Moce testów dla prób z rozkładu normalnego o różnych wariancjach.}
+\label{w2}
+\end{center}
+\end{figure}
+```
+
+## wnioski
+
+# zadanie 3
+
+## założenia  i cel zadania
+
+## rozwiązanie 
+
+```{r}
+N <- 700
+zad3 <- function(d, a = 0.05) {
+    X <- rexp(100, 1/2)
+    Y <- rexp(200, 1/(2 + d))
+    welch <- t.test(X, Y, alternative = "two.sided", var.equal = FALSE)$p.value < a
+    ttest <- t.test(X, Y, alternative = "two.sided", var.equal = TRUE)$p.value < a
+    wilcox <- wilcox.test(X, Y, alternative = "two.sided")$p.value < a
+    c(ttest, welch, wilcox)
+}
+
+d <- seq(-1.9,1.9, 0.1)
+
+v3 <-  sapply(d, zad3)
+
+for (i in seq(1,N-1,1)) {
+    v3 <- v3 + sapply(d, zad3)
+}
+mat3 <- v3/N
+```
+
+```{r, include = FALSE}
+p <- ggplot() + geom_point(aes(d, mat3[1,], color="t")) +
+geom_point(aes(d, mat3[2,], color="t-welch")) + geom_point(aes(d, mat3[3,], color="wilcoxon")) + 
+geom_line(aes(d, mat3[1,], color="t")) + geom_line(aes(d, mat3[2,], color="t-welch")) +
+geom_line(aes(d, mat3[3,], color="wilcoxon")) + geom_line(aes(d, rep(0.05, length(d)), color="alpha = 0.05")) + 
+ggtitle("Symulacyjne wartości mocy testów") + labs(x="d", y ="moc") +
+theme(plot.title = element_text(hjust = 0.5)) + guides(color = guide_legend(title = "test"))
+
+ggsave("3.jpg", p)
+```
+
+```{=Latex}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.75\textwidth]{3.jpg}
+\caption{Moce testów dla prób z rozkładu wykładniczego.}
+\label{w3}
+\end{center}
+\end{figure}
+```
+
+## wnioski
+
+# Podsumowanie
