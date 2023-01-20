@@ -37,6 +37,7 @@ knitr::opts_chunk$set(echo = TRUE)
 require(gridExtra)
 library('dplyr')
 library(ggplot2)
+#options(repr.plot.width =13, repr.plot.height =6)
 ```
 \newpage
 
@@ -74,15 +75,23 @@ N <- 500 #1000
 ```
 
 ## rozwiązanie 
+```{r, include=FALSE}
+freedom <- function(s1,s2,n1,n2) {
+    (s1/n1 + s2/n2)^2/((s1/n1)^2/(n1-1) + (s2/n2)^2/(n2-1))
+}
+```
+
 
 ```{r}
 zad1 <- function(d, s1=2, s2=2, a = 0.05) {
     X <- rnorm(100, 0, s1)
     Y <- rnorm(200, d, s2)
     welch <- t.test(X, Y, alternative = "two.sided", var.equal = FALSE)$p.value < a
+    welch2 <- abs(t.test(X, Y, alternative = "two.sided", var.equal = FALSE)$statistic) > qt(1-a/2, freedom(s1, s2,100,200))
     ttest <- t.test(X, Y, alternative = "two.sided", var.equal = TRUE)$p.value < a
+    ttest2 <- abs(t.test(X, Y, alternative = "two.sided", var.equal = TRUE)$statistic) > qt(1-a/2, freedom(s1, s2,100,200))
     wilcox <- wilcox.test(X, Y, alternative = "two.sided")$p.value < a
-    c(ttest, welch, wilcox)
+    c(ttest, welch, wilcox, ttest2, welch2)
 }
 
 v <-  sapply(d, zad1)
@@ -113,8 +122,58 @@ ggsave("1.jpg", p)
 \end{figure}
 ```
 
-## wnioski
+PORÓWNANIE METOD - symulacja na podstawie pwartości vs wartości krytycznej - test t (powinno wyjść to samo)
+```{r, include = FALSE}
+p <- ggplot() + geom_point(aes(d, mat[1,], color="p-value")) +
+geom_point(aes(d, mat[4,], color="critical value")) + geom_line(aes(d, mat[1,], color="p-value")) +
+  geom_line(aes(d, mat[4,], color="critical value")) + geom_line(aes(d, rep(0.05, length(d)), color="alpha = 0.05")) + 
+ggtitle("Moce testów na podstawie dwóch metod - test t") + labs(x="d", y ="moc") +
+theme(plot.title = element_text(hjust = 0.5)) + guides(color = guide_legend(title = "test"))
 
+ggsave("11.jpg", p)
+```
+
+```{=Latex}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.75\textwidth]{11.jpg}
+\caption{Moce testów dla prób z rozkładu normalnego o równych wariancjach.}
+\label{w11}
+\end{center}
+\end{figure}
+```
+
+PORÓWNANIE METOD - symulacja na podstawie pwartości vs wartości krytycznej - test welcha
+```{r, include = FALSE}
+p <- ggplot() + geom_point(aes(d, mat[2,], color="p-value")) +
+geom_point(aes(d, mat[5,], color="critical value")) + 
+geom_line(aes(d, mat[2,], color="p-value")) + geom_line(aes(d, mat[5,], color="critical value")) + geom_line(aes(d, rep(0.05, length(d)), color="alpha = 0.05")) + 
+ggtitle("Moce testów na podstawie dwóch metod - test t-welcha") + labs(x="d", y ="moc") +
+theme(plot.title = element_text(hjust = 0.5)) + guides(color = guide_legend(title = "test"))
+
+ggsave("12.jpg", p)
+```
+
+```{=Latex}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.75\textwidth]{12.jpg}
+\caption{Moce testów dla prób z rozkładu normalnego o równych wariancjach.}
+\label{w12}
+\end{center}
+\end{figure}
+```
+
+dla wilcoxona nie umiem
+
+
+ogólnie obie metody wyszły identyczne - używamy od teraz tylko jednej żeby nie marnować papieru 
+
+
+## wnioski
+ nie ma jednoznacznie najmocniejszego testu, ale wszystkie mają się dobrze
+ 
+ 
 # zadanie 2
 
 ## założenia  i cel zadania
@@ -160,6 +219,7 @@ ggsave("2.jpg", p)
 ```
 
 ## wnioski
+teraz najlepiej wypadł welch, bo t zakłada równość wariancji (temu odpiernicza) a wilcoxon jakoś się trzyma, ale nie jest tak dobry 
 
 # zadanie 3
 
@@ -210,5 +270,9 @@ ggsave("3.jpg", p)
 ```
 
 ## wnioski
+
+pojęcia nie mam co tu napisać, to tak odpiernicza, ale teoretycznie najlepiej powinien wypaść wilcoxon (bo nie zakłada rozkładu normalnego)
+
+ale problem moze byc z dwustronnością hipotezy (kwestia przesunięcia)
 
 # Podsumowanie
