@@ -169,6 +169,23 @@ dla wilcoxona nie umiem
 
 ogólnie obie metody wyszły identyczne - używamy od teraz tylko jednej żeby nie marnować papieru 
 
+```{r, include = FALSE}
+p <- ggplot() + geom_line(aes(d, (mat[1,]-mat[2,]), color="t-welch")) +
+geom_line(aes(d, (mat[2,] - mat[3,]), color="welch -wc")) + geom_line(aes(d, (mat[1,] - mat[3,]), color="t-wc")) +
+ggtitle("Różnice między mocami") + labs(x="d", y ="dpower") +
+theme(plot.title = element_text(hjust = 0.5)) + guides(color = guide_legend(title = "test"))
+ggsave("111.jpg", p)
+```
+
+```{=Latex}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.75\textwidth]{111.jpg}
+\caption{Moce testów dla prób z rozkładu normalnego o równych wariancjach.}
+\label{w111}
+\end{center}
+\end{figure}
+```
 
 ## wnioski
  nie ma jednoznacznie najmocniejszego testu, ale wszystkie mają się dobrze
@@ -268,7 +285,23 @@ ggsave("3.jpg", p)
 \end{center}
 \end{figure}
 ```
+```{r, include = FALSE}
+p <- ggplot() + geom_line(aes(d, (mat3[1,]-mat3[2,]), color="t-welch")) +
+geom_line(aes(d, (mat3[2,] - mat3[3,]), color="welch -wc")) + geom_line(aes(d, (mat3[1,] - mat3[3,]), color="t-wc")) +
+ggtitle("Różnice między mocami") + labs(x="d", y ="dpower") +
+theme(plot.title = element_text(hjust = 0.5)) + guides(color = guide_legend(title = "test"))
+ggsave("311.jpg", p)
+```
 
+```{=Latex}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.75\textwidth]{311.jpg}
+\caption{Moce testów dla prób z rozkładu normalnego o równych wariancjach.}
+\label{w311}
+\end{center}
+\end{figure}
+```
 ## wnioski
 
 pojęcia nie mam co tu napisać, to tak odpiernicza, ale teoretycznie najlepiej powinien wypaść wilcoxon (bo nie zakłada rozkładu normalnego)
