@@ -44,17 +44,49 @@ library(ggplot2)
 
 # Wstęp
 ```{=LATEX}
-W niniejszej pracy zostanie przeprowadzaone testowanie hipotez dla trzech różnych testów. Analizie zostaną poddane moce owych testów, czyli prawdopodobieństwa odrzucenia fałszywej hipotezy zerowej na rzecz przyjęcia prawdziwej hipotezy alternatywnej. Testowana będzię hipoteza dwustronna, tj.    $H_0$: $\mu_1=\mu_2$ przeciwko $H_1$: $\mu_1\neq\mu_2$.
+W niniejszej pracy zostanie przeprowadzaone testowanie hipotez dla trzech różnych testów. Analizie zostaną poddane moce owych testów, czyli prawdopodobieństwa odrzucenia fałszywej hipotezy zerowej na rzecz przyjęcia prawdziwej hipotezy alternatywnej. Testowana będzię hipoteza dwustronna, tj.    $H_0$: $\mu_1=\mu_2$ przeciwko $H_1$: $\mu_1\neq\mu_2$ dla dwóch prób z rozkładu normalnego oraz wykładniczego. Wybrany poziom istotności wynosić będzie $\alpha = 0.05$. Dla każdego z rozważanych przypadków przeprowadzone zostaną trzy testy:
+\begin{itemize}
+\item test t-Studenta (przy założeniu $\sigma_1 = \sigma_2 = 2$),
+\item test t-Welcha,
+\item test sumy rang znakowanych Wilcoxona.
+\end{itemize}
+Na podstawie otrzymanych wykresóW wyciągnięte zostaną wnioski dotyczące poprawności przeprowadzenia rozważanych testów oraz ustalone zostanie, który z testów jest w danym przypadku jednostajnie najmocniejszy.
 
- XDD Odpowiednio postawione pytania badawcze oraz uzyskane odpowiedzi, pozwoliły dokonać interpretacji wyników, z których wysunięte zostały wnioski na temat czynników wpływających na popularność owego gatunku książek. Wszelkie operacje oraz wizualizacje przeprowadzono w języku R.
 ```
 # Zagadnienia teoretyczne
-przydatne definicje i twierdzenia
+Poniżej przedstawione zostaną definicje oraz testy, z których należy skorzystać podczas symulacyjnego badania mocy.
+
+## $p$-wartość
 ```{=LATEX}
 $p$-wartość, czyli wartość prawdopodobieństwa zdarzenia, że w uzyska się podobną wartość w drugim teście jaką sie otrzymało w pierwszym. Jest to najmniejszy poziom istotności $\alpha$, przy którym zaobserwowane wartości statystyki testowej prowadzą do odrzucenia hipotezy zerowej.
 ```
 
-## test t-Studenta i test t-Welcha
+## Moc testu
+```{=LATEX}
+Moc testu jest dopełnieniem do jedności wartości prawdopodobieństwa popełnienia błędu II rodzaju, czyli moc określa prawdopodobieństwo odrzucenia fałszywej hipotezy zerowej.
+Funkcja mocy testu może zostać wyprowadzona teoretycznie, a także wygenerowana za pomocą symulacji Monte Carlo. Ogólny algorytm szukania mocy testu polega na przeprowadzeniu $N$  testów dla każdej z dwóch prób o wybranych parametrach o wartościach z hipotezy alternatywnej $\mu1 \neq \mu_2$ oraz znalezieniu jaki procent takich fałszywych hipotez zerowych zostało odrzuconych. Istnieje kilka metod, na podstawie których można odrzucić bądź przyjąć hipotezę zerową. Jedna z nich opiera się na znalezieniu $p$-wartości testu i porównaniu jej z ustalonym poziomem istotności $\alpha$. Inna bazuje na wartościach krytycznych danego testu. Obie te metody zostaną zaimplementowane i porównane.
+
+Ogólny algorytm symulacyjnego szukania mocy testu dla pojedynczej wartości z hipotezy alternatywnej można zatem zapisać w poniższy sposób.
+\begin{enumerate}
+\item Ustalenie początkowego stanu mocy testu jako 0.
+\item Generacja dwóch prób $X$, $Y$ z tego samego rozkładu, o danych parametrach średniej odpowiednio $\mu_1$ i $\mu_2$, gdzie $\mu_1-\mu_2 = d \neq 0$.
+\item Przeprowadzenie testu za pomocą wbudowanych funkcji języka \textit{R}.
+\item Metoda 1. - znalezienie $p$-wartości (otrzymana jest bezpośrednio po wykonaniu funkcji we wszystkich rozważanych testach). Porównanie jej z wartością $\alpha$, to znaczy jeśli $p.value < \alpha$, dodanie do początkowego stanu mocy 1. W przeciwnym wypadku przejście do kolejnego punktu.
+\item Metoda 2. - znalezienie statystyki $T$ oraz wartości krytycznych testu. Statystyka także jest zwracana bezpośrednio przez funkcję testu. Wartości krytyczne i warunek jaki musi spełnić $T$ zależą od rozważanej hipotezy alternatywnej oraz rodzaju testu. Jeśli podany warunek jest spełniony i hipotezę odrzucono - dodanie 1 do początkowego stanu mocy. W przeciwnym wypadku przejście do kolejnego punktu.
+\item Powtórzenie poprzednich punktów $N$ razy.
+\item Uśrednienie wyników, czyli podzielenie otrzymanych stanów mocy (z obu metod) przez $N$.
+\end{enumerate}
+
+Oszacowana wartość mocy testu dla wartości pochodzącej z hipotezy zerowej staje się wysymulowaną wartością błędu I rodzaju, czyli odrzucenia hipotezy zerowej, gdy jest ona prawdziwa. Ta wartość w przybliżeniu powinna wynieść tyle, ile wynosi ustalony poziom istotności $\alpha$. Gdy zatem obie te wartości nie będą sobie bliskie w otrzymanych wynikach, wyciągnąć będzie można wniosek o niepoprawności przeprowadzonego testu. 
+```
+
+
+## Test jednostajnie najmocniejszy
+```{=LATEX}
+Mówimy, że test jest jednostajnie najmocniejszy, jeśli moc tego testu jest niemniejsza niż moc każdego innego rozważanego testu danych hipotez.
+```
+
+## Test t-Studenta i test t-Welcha
 ```{=LATEX}
 Test t-Studenta jest jednym z testów, który może poróWnać ze sobą średnie z dwóch niezależnych od siebie prób z rozkładu normalnego. Sprawdza on, czy różnice pomiędzy tymi wartościami są istotne statystycznie. Aby mówić o oryginalnym teście t-Studenta, musimy mieć doczynienia z próbami o równych wariancjach. Powinna zostać również spełniona równoliczność prób, jednak test ten jest odporny na pominięcie tego założenia. Natomiast jeśli taka sama liczność grup zostanie zachowana, test staje się odporny na niespełnienia założenia o równych wariancjach.\footnote{\url{https://en.wikipedia.org/wiki/Student's_t-test}}
 
@@ -65,15 +97,7 @@ Możemy również powiedzieć o uogólnionej postaci owego testu, mianowicie o t
 ```{=LATEX}
 Jakiś tam test opis. Test Wilcoxona jest nieparametrycznym odpowiednikiem t testóW. Nie wymaga on założeń co do rozkładów testowanych prób.W przypadku szczególnym, tj. dwóch prób z rozkładów symetrycznych wraz z parametrem przesunięcia, będzie on dotyczył średnich.
 ```
-## Moc testu
-definicja i algorytm generowania
-```{=LATEX}
-Moc testu jest dopełnieniem do jedności wartości prawdopodobieństwa popełnienia błędu II rodzaju, czyli moc określa prawdopodobieśtwo odrzucenia fałszywej hipotezy zerowej. 
-```
-## test jednostajnie najmocniejszy
-```{=LATEX}
-Mówimy, że test jest jednostajnie najmocniejszy, jeśli moc tego testu jest niemniejsza niż moc każdego innego rozważanego testu danych hipotez.
-```
+
 # Zadania
 
 ```{=LATEX}
