@@ -20,6 +20,7 @@ header-includes:
     - \usepackage{enumitem}
     - \usepackage{mathtools}
     - \usepackage{hyperref}
+    - \usepackage{subfig}
     - \usepackage{url}
     - \mathtoolsset{showonlyrefs}
     - \usepackage{caption}
@@ -44,7 +45,7 @@ library(ggplot2)
 
 # Wstęp
 ```{=LATEX}
-W niniejszej pracy zostanie przeprowadzaone testowanie hipotez dla trzech różnych testów. Analizie zostaną poddane moce owych testów, czyli prawdopodobieństwa odrzucenia fałszywej hipotezy zerowej na rzecz przyjęcia prawdziwej hipotezy alternatywnej. Testowana będzię hipoteza dwustronna, tj.    $H_0$: $\mu_1=\mu_2$ przeciwko $H_1$: $\mu_1\neq\mu_2$ dla dwóch prób z rozkładu normalnego oraz wykładniczego. Wybrany poziom istotności wynosić będzie $\alpha = 0.05$. Dla każdego z rozważanych przypadków przeprowadzone zostaną trzy testy:
+W niniejszej pracy zostanie przeprowadzaone testowanie hipotez dla trzech różnych testów. Analizie zostaną poddane moce owych testów, czyli prawdopodobieństwa odrzucenia fałszywej hipotezy zerowej na rzecz przyjęcia prawdziwej hipotezy alternatywnej. Testowana będzię hipoteza dwustronna, tj.$H_0$:~$\mu_1=\mu_2$ przeciwko $H_1$: $\mu_1\neq\mu_2$ dla dwóch prób z rozkładu normalnego oraz wykładniczego. Wybrany poziom istotności wynosić będzie $\alpha = 0.05$. Dla każdego z rozważanych przypadków przeprowadzone zostaną trzy testy:
 \begin{itemize}
 \item test t-Studenta (przy założeniu $\sigma_1 = \sigma_2 = 2$),
 \item test t-Welcha,
@@ -89,9 +90,11 @@ Mówimy, że test jest jednostajnie najmocniejszy, jeśli moc tego testu jest ni
 ## Test t-Studenta i test t-Welcha
 ```{=LATEX}
 Test t-Studenta jest jednym z testów, który może porównać ze sobą średnie z dwóch niezależnych od siebie prób z rozkładu normalnego. Sprawdza on, czy różnice pomiędzy tymi wartościami są istotne statystycznie. Aby mówić o oryginalnym teście t-Studenta, musimy mieć doczynienia z próbami o równych wariancjach. Powinna zostać również spełniona równoliczność prób, jednak test ten jest odporny na pominięcie tego założenia. Natomiast jeśli taka sama liczność grup zostanie zachowana, test staje się odporny na niespełnienie założenia o równych wariancjach.\footnote{\url{https://en.wikipedia.org/wiki/Student's_t-test}} Statystyka testu t wyrażona jest wzorem
+
 \begin{equation}
 \sqrt{n_h}\frac{\bar{X}-\bar{Y}}{S_p} \sim \mathcal{T}(n_X +n_Y -2),
 \end{equation}
+
 gdzie 
 \begin{itemize}
 \item $n_h = \frac{1}{\frac{1}{n_X}+\frac{1}{n_Y}}$,
@@ -113,21 +116,35 @@ p.value = 2(1 - t_{|T|, n_X+n_Y -2}).
 Oznaczenia kwantyla $t$ pozostają takie same. Hipoteza zostanie odrzucona, gdy $p.value < \alpha$.
 
 
-Możemy również powiedzieć o uogólnionej postaci owego testu, mianowicie o teście t-Welcha. Zostając przy założeniu normalności rozkładóW porównywanych prób, nie są wymagane w tym przypadku równe wariancje.
+Możemy również powiedzieć o uogólnionej postaci owego testu, mianowicie o teście t-Welcha. Zostając przy założeniu normalności rozkładów porównywanych prób, nie są wymagane w tym przypadku równe wariancje. Statystyka testu t-Welsha jest wyrażona wzorem
 \begin{equation}
-\frac{\bar{X}-\bar{Y}}{\sqrt{\frac{\sigma_X^2}{n_X}+\frac{\sigma_Y^2}{n_Y}}} \sim \mathcal{N}(0,1)
+\frac{\bar{X}-\bar{Y}}{\sqrt{\frac{S_X^2}{n_X}+\frac{S_Y^2}{n_Y}}}.
 \end{equation}
+Ma ona w przybliżeniu rozkład $\mathcal{T}(v)$, gdzie
+\begin{equation}
+v \approx \frac{\left(\frac{\S_X^2}{n_X}+\frac{\S_Y^2}{n_Y}\right)^2}{\frac{S_X^4}{n_X^2(n_X-1)}+\frac{S_Y^4}{n_Y^2(n_Y-1)}}
+\end{equation}
+to liczba stopni swobody.
+Podobnie jak w przypadku testu t-Studenta, możemy wyznaczyć potrzebne wartości krytyczne statystyki $T_W =\frac{\bar{X}-\bar{Y}}{\sqrt{\frac{S_X^2}{n_X}+\frac{S_Y^2}{n_Y}}}$, która spełnia nierówność
+\begin{equation}
+|T| > t_{1-\frac{\alpha}{2},v}.
+\end{equation}
+Analogicznie odbywa się to przy pomocy $p$-wartości, która jest postaci
+\begin{equation}
+p.value = 2(1 - t_{|T|, v}).
+\end{equation}
+Oczywiście hipoteza zostanie odrzucona, gdy $p.value < \alpha$.
 ```
 
 ## Test sum rang Wilcoxona
 ```{=LATEX}
-Jakiś tam test opis. Test Wilcoxona jest nieparametrycznym odpowiednikiem t testóW. Nie wymaga on założeń co do rozkładów testowanych prób.W przypadku szczególnym, tj. dwóch prób z rozkładów symetrycznych wraz z parametrem przesunięcia, będzie on dotyczył średnich.
+Jakiś tam test opis. Test Wilcoxona jest nieparametrycznym odpowiednikiem t testów. Nie wymaga on założeń co do rozkładów testowanych prób.W przypadku szczególnym, tj. dwóch prób z rozkładów symetrycznych wraz z parametrem przesunięcia, będzie on dotyczył średnich.
 ```
-
+\newpage
 # Zadania
 
 ```{=LATEX}
-Każde z zadań polega na sprawdzeniu podanych we wstępie hipotez na poziomie istotności $\alpha = 0.05$. Rozważane będą kolejno próby z różnych rozkładów i Zostaną one w każdym przypadku poddane trzem wyżej opisanym testom. Do analizy mocy ów testóW zostanie przeprowadzona symulacja Monte Carlo, która jednocześnie pozwoli nam odpowiedzieć na pytanie, czy któryś ze stosowanych testów jest wśrod reszty jednostajnie najmocniejszy. 
+Każde z zadań polega na sprawdzeniu podanych we wstępie hipotez na poziomie istotności $\alpha = 0.05$. Rozważane będą kolejno próby z różnych rozkładów i Zostaną one w każdym przypadku poddane trzem wyżej opisanym testom. Do analizy mocy ów testów zostanie przeprowadzona symulacja Monte Carlo, która jednocześnie pozwoli nam odpowiedzieć na pytanie, czy któryś ze stosowanych testów jest wśrod reszty jednostajnie najmocniejszy. 
 ```
 
 ## Zadanie 1
@@ -141,7 +158,7 @@ Rozważmy próbę $\left(X_1, \ldots, X_{100}\right)$ z rozkładu normalnego $\m
 Obie rozważane próby są z rozkładu normalnego o równych wariancjach. Zgodnie z przedstawioną teorią, oczekujemy iż to test t-Studenta będzie działał najlepiej. Mimo że próby nie są równoliczne, zachowane zostało założenie o takich samych wariancjach. Mamy do czynienia ze szczególnym przypadkiem rozkładów symetrycznych z parametrem przesunięcia, dlatego też test sum rang Wilcoxona zajmujący się równością median, w naszym przypadku będzie bezpośrednio testował średnie zgodnie z hipotezami.
 ```
 ### Rozwiązanie 
-Aby otrzymać moc testu, u go girl z algorytmem
+
 ```{r, include=FALSE}
 freedom <- function(s1,s2,n1,n2) {
     (s1/n1 + s2/n2)^2/((s1/n1)^2/(n1-1) + (s2/n2)^2/(n2-1))
@@ -168,9 +185,9 @@ zad1 <- function(d, s1=2, s2=2, a = 0.05) {
 #mat <- v/N
 ```
 
-
-PORÓWNANIE METOD - symulacja na podstawie pwartości vs wartości krytycznej - test t (powinno wyjść to samo)
-Porównajmy najpierw obie metody dla testu t-Studenta. 
+```{=Latex}
+Rozwiązywanie zadania zaczniemy od porównania obu opisanych wyżej metod wyznaczania mocy testu, czyli przy pomocy $p$-wartości oraz wartości krytycznych.
+```
 ```{r, include = FALSE}
 #p <- ggplot() + geom_point(aes(d, mat[1,], color="p-value")) +
 #geom_point(aes(d, mat[4,], color="critical value")) + geom_line(aes(d, mat[1,], color="p-value")) +
@@ -181,17 +198,19 @@ Porównajmy najpierw obie metody dla testu t-Studenta.
 ```
 
 ```{=Latex}
-\begin{figure}[H]
-\begin{center}
-\includegraphics[width=0.75\textwidth]{11.jpg}
-\caption{Moce testów dla prób z rozkładu normalnego o równych wariancjach.}
-\label{w11}
-\end{center}
+
+\begin{figure}[h!]
+	\centering
+	\subfloat[\centering Test t-Studenta]{{\includegraphics[width=0.45\textwidth]{11.jpg} }}
+	\qquad
+	\subfloat[\centering Test t-Welcha]{{\includegraphics[width=0.45\textwidth]{12.jpg} }}
+	\caption{Porównanie symulacji na podstawie p-wartości i wartości krytycznych}
+	\label{e1}
 \end{figure}
 
-Z wykresu na powyższym rysunku \ref{w11} można dojść do wniosku, iż obie metody działają i dają identyczne wyniki - wykresy pokrywają się. !!!!! COŚ O TYM ŻE SIĘGAJĄ ALFA mądrze? !!!!! Porównajmy teraz obie symulacje dla testu t-Welcha.
+Z wykresów na powyższym rysunku \ref{e1} można dojść do wniosku, iż obie metody działają i dają identyczne wyniki. W obu przypadkach, dla testu t-Studenta oraz t-Welcha,  wykresy wygenerowane na dwa różne sposoby pokrywają się. Zgodnie z teorią, otrzymane wartości dla argumnetów spełniających hipoteze zerową znajdują się na zadanym poziomie istotności $\alpha$.
 ```
-PORÓWNANIE METOD - symulacja na podstawie pwartości vs wartości krytycznej - test welcha
+
 ```{r, include = FALSE}
 #p <- ggplot() + geom_point(aes(d, mat[2,], color="p-value")) +
 #geom_point(aes(d, mat[5,], color="critical value")) + 
@@ -200,19 +219,10 @@ PORÓWNANIE METOD - symulacja na podstawie pwartości vs wartości krytycznej - 
 
 #ggsave("12.jpg", p)
 ```
-
+\pagebreak
 ```{=Latex}
-\begin{figure}[H]
-\begin{center}
-\includegraphics[width=0.75\textwidth]{12.jpg}
-\caption{Moce testów dla prób z rozkładu normalnego o równych wariancjach.}
-\label{w12}
-\end{center}
-\end{figure}
 
-Otrzymaliśmy podobny rezultat jak w wypadku testu t-Studenta. Ponownie na rysunku \ref{w12} wysymulowane wykresy nakładają się na siebie. 
-
-Dla testu Wilcoxona wszelkie łątwodostępne tabele wartości krytycznych dotyczą prób o wielkości maksymalnie $25$.\footnote{\url{https://real-statistics.com/statistics-tables/wilcoxon-rank-sum-table-independent-samples/}} Zadane nam próby mają wielkości odpowiednio 100 i 200, przez co metoda wyznaczana mocy testu przy użyciu tych wartości jest utrudniona. Jak można zauważyć na omówionych już wykresach \ref{w11} i \ref{w12}, moc wyznaczona przy pomocy $p$-wartośći oraz przy pomocy wartości krytycznych, dała niemalże identyczne wyniki. Dlatego też do rozwiązania pozostałych zadań użyta zostanie jedynie metoda oparta o $p$-wartość.
+Dla testu Wilcoxona wszelkie łatwodostępne tabele wartości krytycznych dotyczą prób o wielkości maksymalnie $25$.\footnote{\url{https://real-statistics.com/statistics-tables/wilcoxon-rank-sum-table-independent-samples/}} Zadane nam próby mają wielkości odpowiednio 100 i 200, przez co metoda wyznaczana mocy testu przy użyciu tych wartości jest utrudniona. Jak można zauważyć na omówionych już wykresach znajdującyh się na rysunku \ref{e1}, moc wyznaczona przy pomocy $p$-wartośći oraz przy pomocy wartości krytycznych, dała niemalże identyczne wyniki. Dlatego też do rozwiązania pozostałych zadań użyta zostanie jedynie metoda oparta o $p$-wartość.
 ```
 ```{r, include = FALSE}
 #p <- ggplot() + geom_point(aes(d, mat[1,], color="t")) +
@@ -228,12 +238,14 @@ Dla testu Wilcoxona wszelkie łątwodostępne tabele wartości krytycznych dotyc
 ```{=Latex}
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.75\textwidth]{1.jpg}
+\includegraphics[width=0.6\textwidth]{1.jpg}
 \caption{Moce testów dla prób z rozkładu normalnego o równych wariancjach.}
 \label{w1}
 \end{center}
 \end{figure}
-
+hejhejhj\\
+hejjjj\\
+hola
 
 ```
 
@@ -248,14 +260,14 @@ Dla testu Wilcoxona wszelkie łątwodostępne tabele wartości krytycznych dotyc
 \begin{figure}[H]
 \begin{center}
 \captionsetup{justification=centering,margin=2cm}
-\includegraphics[width=0.75\textwidth]{111.jpg}
+\includegraphics[width=0.6\textwidth]{111.jpg}
 \caption{Poszczególne róznice wysymulowanych mocy testów dla prób z rozkładu normalnego o równych wariancjach.}
 \label{w111}
 \end{center}
 \end{figure}
 ```
 
-### wnioski
+### Wnioski
  nie ma jednoznacznie najmocniejszego testu, ale wszystkie mają się dobrze
  
  wilcoxon: One may wonder why we would not always use a non-parametric test so we do not have to bother about testing for normality. The reason is that non-parametric tests are usually less powerful than corresponding parametric tests when the normality assumption holds. Therefore, all else being equal, with a non-parametric test you are less likely to reject the null hypothesis when it is false if the data follows a normal distribution. It is thus preferred to use the parametric version of a statistical test when the assumptions are met.
@@ -284,21 +296,21 @@ zad2 <- function(d, s1=2, s2=4, a = 0.05) {
     c(ttest, welch, wilcox)
 }
 
-v <-  sapply(d, zad2)
-for (i in seq(1,N-1,1)) {
-    v <- v + sapply(d, zad2)
-}
-mat <- v/N
+#v <-  sapply(d, zad2)
+#for (i in seq(1,N-1,1)) {
+#    v <- v + sapply(d, zad2)
+#}
+#mat <- v/N
 ```
 
 ```{r, include = FALSE}
-p <- ggplot() + geom_point(aes(d, mat[1,], color="t")) +
-geom_point(aes(d, mat[2,], color="t-welch")) + geom_point(aes(d, mat[3,], color="wilcoxon")) + 
-geom_line(aes(d, mat[1,], color="t")) +geom_line(aes(d, mat[2,], color="t-welch")) +
-geom_line(aes(d, mat[3,], color="wilcoxon"))+geom_line(aes(d, rep(0.05, length(d)), color="alpha = 0.05")) + labs(x="d", y ="moc") +
-theme(plot.title = element_text(hjust = 0.5)) + guides(color = guide_legend(title = "test"))
+#p <- ggplot() + geom_point(aes(d, mat[1,], color="t")) +
+#geom_point(aes(d, mat[2,], color="t-welch")) + geom_point(aes(d, mat[3,], color="wilcoxon")) + 
+#geom_line(aes(d, mat[1,], color="t")) +geom_line(aes(d, mat[2,], color="t-welch")) +
+#geom_line(aes(d, mat[3,], color="wilcoxon"))+geom_line(aes(d, rep(0.05, length(d)), color="alpha = 0.05")) + labs(x="d", y ="moc") +
+#theme(plot.title = element_text(hjust = 0.5)) + guides(color = guide_legend(title = "test"))
 
-ggsave("2.jpg", p)
+#ggsave("2.jpg", p)
 ```
 
 ```{=Latex}
@@ -317,17 +329,17 @@ Powyższy wykres znacząco różni się od wykresu \ref{w1} otrzymanego w zadani
 ### Wnioski
 Jakieś wnioski, które napisze poźniej.  
 
-## zadanie 3
+## Zadanie 3
 
 ```{=LATEX}
 Rozważmy próbę $\left(X_1, \ldots, X_{100}\right)$ z rozkładu wykładniczego $\mathcal{E}\left(\frac{1}{\mu_1}\right)$ oraz próbę $\left(Y_1, \ldots, Y_{200}\right)$ z rozkładu wykładniczego $\mathcal{E}\left(\frac{1}{\mu_2}\right)$. Wykonaj wykres funcji mocy na przedziale zawierającym przynajmniej po jednym punkcie z hipotezy zerowej i alternatywnej. Jak zmieniła się funkcja mocy testów?
 ```
 
-### założenia  i cel zadania
+### Założenia  i cel zadania
 
-### rozwiązanie 
+### Rozwiązanie 
 
-```{r}
+```{r, echo=FALSE}
 zad3 <- function(d, a = 0.05) {
     X <- rexp(100, 1/2)
     Y <- rexp(200, 1/(2 + d))
@@ -382,10 +394,9 @@ zad3 <- function(d, a = 0.05) {
 \end{center}
 \end{figure}
 ```
-### wnioski
+### Wnioski
 
 pojęcia nie mam co tu napisać, to tak odpiernicza, ale teoretycznie najlepiej powinien wypaść wilcoxon (bo nie zakłada rozkładu normalnego)
 
 ale problem moze byc z dwustronnością hipotezy (kwestia przesunięcia)
 
-# Podsumowanie
