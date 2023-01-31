@@ -243,9 +243,8 @@ Dla testu Wilcoxona wszelkie łatwodostępne tabele wartości krytycznych dotycz
 \label{w1}
 \end{center}
 \end{figure}
-hejhejhj\\
-hejjjj\\
-hola
+
+Po wykonaniu symulacji Monte Carlo dla trzech rozpatrywanych testów, można zauważyć iż test Wilcoxona odbiega minimalnie od pozostałych. Odległości na wykresie \ref{w1} są jednak na tyle małe, że w celu zobrazowania różnic pomiędzy mocami, wykonany zostanie ich wykres.
 
 ```
 
@@ -265,11 +264,12 @@ hola
 \label{w111}
 \end{center}
 \end{figure}
+
+Na wykresach widocznych na rysunku \ref{w111} jesteśmy w stanie wyodbrębnić różnice o podobnym charakterze. Mianowicie różnice testów t względem testem sum rang Wilcoxona zachowują się podobnie, na czego podstawie moglibyśmy potwierdzić, iż to właśnie ten test odstaje od reszty. Różnica pomiędzy testami jest znacznie mniejsza i oscyluje wokół zera. 
 ```
 
 ### Wnioski
- nie ma jednoznacznie najmocniejszego testu, ale wszystkie mają się dobrze
- 
+ Na podstawie otrzymanych wynikóW nie można określić jednostajnie najmocniejszego testu. Każdy z rozważanych jednak MA SIE DOBRZE
  wilcoxon: One may wonder why we would not always use a non-parametric test so we do not have to bother about testing for normality. The reason is that non-parametric tests are usually less powerful than corresponding parametric tests when the normality assumption holds. Therefore, all else being equal, with a non-parametric test you are less likely to reject the null hypothesis when it is false if the data follows a normal distribution. It is thus preferred to use the parametric version of a statistical test when the assumptions are met.
  
  
@@ -279,9 +279,9 @@ hola
 Rozważmy próbę $\left(X_1, \ldots, X_{100}\right)$ z rozkładu normalnego $\mathcal{N}(\mu_1, 2^2)$ oraz próbę $\left(Y_1, \ldots, Y_{200}\right)$ z rozkładu normalnego $\mathcal{N}(\mu_2, 4^2)$. Ponownie wykonamy wykres funcji mocy na przedziale zawierającym przynajmniej po jednym punkcie z hipotezy zerowej i alternatywnej, czyli w zależności od $\mu_2-\mu_1$ na przedziale (-2,2).
 ```
 ### Założenia  i cel zadania
-Tym razem mamy do czynienia z dwiema niezależnymi próbami z rozkładu normalnego o różnych wariancjach. Zgodnie z przedstawioną wcześniej teorią, sprawia to, że założenia dotyczące wykonania t-testu nie są spełnione. Przewidywać zatem można, że ów test może napotkać pewne problemy i ostatecznie uzyskamy sfałszowane wyniki. Test t-Welcha w tym wypadku powinien być testem jednostajnie najmocniejszym.
-
-
+```{=LATEX}
+Tym razem mamy do czynienia z dwiema niezależnymi próbami z rozkładu normalnego o różnych wariancjach. Zgodnie z przedstawioną wcześniej teorią, sprawia to, że założenia dotyczące wykonania testu t-Studenta nie są spełnione. Przewidywać zatem można, że ów test może napotkać pewne problemy i~ostatecznie uzyskamy sfałszowane wyniki. Test t-Welcha w tym wypadku powinien być testem jednostajnie najmocniejszym.
+```
 ### Rozwiązanie 
 
 ```{r, include=FALSE}
@@ -316,14 +316,14 @@ zad2 <- function(d, s1=2, s2=4, a = 0.05) {
 ```{=Latex}
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.75\textwidth]{2.jpg}
+\includegraphics[width=0.6\textwidth]{2.jpg}
 \caption{Moce testów dla prób z rozkładu normalnego o różnych wariancjach.}
 \label{w2}
 \end{center}
 \end{figure}
 ```
 ```{=Latex}
-Powyższy wykres znacząco różni się od wykresu \ref{w1} otrzymanego w zadaniu 1. Tym razem każdy z testów osiągał nieco inne wartości mocy. Jednostajnie najmocniejszym testem jest w tym wypadku test t-Welcha, jak zostało to przewidziane wcześniej. Jako jedyny ma spełnione wszystkie założenia i pomimo bycia tylko przybliżeniem, sprawdził się tutaj najlepiej. Zauważyć można, że dwa pozostałe testy dla $d=0$ osiągają wartości mniejsze od $0.05$. Może to świadczyć o ich niepoprawnym użyciu. W t-teście niespełnione jest założenie o równości wariancji. W teście Wilcoxona NIE WIEM CO SIE DZIEJE I CZEMU.
+Powyższy wykres znacząco różni się od wykresu \ref{w1} otrzymanego w zadaniu 1. Tym razem każdy z testów osiąga nieco inne wartości mocy. Jednostajnie najmocniejszym testem jest w tym wypadku test t-Welcha, jak zostało to przewidziane wcześniej. Jako jedyny ma spełnione wszystkie założenia i pomimo bycia tylko przybliżeniem, sprawdził się tutaj najlepiej. Zauważyć można, że dwa pozostałe testy dla $d=0$ osiągają wartości mniejsze od $0.05$. Może to świadczyć o ich niepoprawnym użyciu. W teście t-Studenta niespełnione jest założenie o równości wariancji. W teście Wilcoxona NIE WIEM CO SIE DZIEJE I CZEMU. MEJBI COŚ ŻE ON JEST OD MEDIAN TAK OVERALL IDK
 ```
 
 ### Wnioski
@@ -332,11 +332,14 @@ Jakieś wnioski, które napisze poźniej.
 ## Zadanie 3
 
 ```{=LATEX}
-Rozważmy próbę $\left(X_1, \ldots, X_{100}\right)$ z rozkładu wykładniczego $\mathcal{E}\left(\frac{1}{\mu_1}\right)$ oraz próbę $\left(Y_1, \ldots, Y_{200}\right)$ z rozkładu wykładniczego $\mathcal{E}\left(\frac{1}{\mu_2}\right)$. Wykonaj wykres funcji mocy na przedziale zawierającym przynajmniej po jednym punkcie z hipotezy zerowej i alternatywnej. Jak zmieniła się funkcja mocy testów?
+Rozważmy próbę $\left(X_1, \ldots, X_{100}\right)$ z rozkładu wykładniczego $\mathcal{E}\left(\frac{1}{\mu_1}\right)$ oraz próbę $\left(Y_1, \ldots, Y_{200}\right)$ z rozkładu wykładniczego $\mathcal{E}\left(\frac{1}{\mu_2}\right)$. Wykres funcji mocy ponownie zostanie wykonany na przedziale zawierającym przynajmniej po jednym punkcie z hipotezy zerowej i alternatywnej. 
 ```
 
 ### Założenia  i cel zadania
 
+```{=LATEX}
+Podane zadanie róźni się znacząco od opisanych wyżej dwoch zadań. W tym przypadku mamy do czynienia z próbami z rozkładów wykładniczych z parametrami zależnymi od średnich $\mu_1$ oraz $\mu_2$. Ponieważ rozkład wykładniczy nie jest symetryczny, test sum rang Wilcoxona nie może działać poprawnie. Jest to jednak jedyny z omawianych przez nas testów, który nie ma założeń co do rozkładów badanych prób. Oba t-testy zakładają normalność rozkładów rozparywanych prób, dlatego też zakładamy ich niekonieczną poprawność.
+```
 ### Rozwiązanie 
 
 ```{r, echo=FALSE}
@@ -372,7 +375,7 @@ zad3 <- function(d, a = 0.05) {
 ```{=Latex}
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.75\textwidth]{3.jpg}
+\includegraphics[width=0.6\textwidth]{3.jpg}
 \caption{Moce testów dla prób z rozkładu wykładniczego.}
 \label{w3}
 \end{center}
@@ -388,7 +391,7 @@ zad3 <- function(d, a = 0.05) {
 ```{=Latex}
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.75\textwidth]{311.jpg}
+\includegraphics[width=0.6\textwidth]{311.jpg}
 \caption{Moce testów dla prób z rozkładu normalnego o równych wariancjach.}
 \label{w311}
 \end{center}
